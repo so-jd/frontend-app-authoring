@@ -19,15 +19,35 @@ const messages = defineMessages({
   },
   dropdownLabel: {
     id: 'course-authoring.schedule-section.requirements.dropdown.label',
-    defaultMessage: 'Prerequisite course',
+    defaultMessage: 'Prerequisite courses',
   },
   dropdownHelpText: {
     id: 'course-authoring.schedule-section.requirements.dropdown.help-text',
-    defaultMessage: 'Course that students must complete before beginning this course',
+    defaultMessage: 'Courses that students must complete before beginning this course',
   },
   dropdownEmptyText: {
     id: 'course-authoring.schedule-section.requirements.dropdown.empty-text',
     defaultMessage: 'None',
+  },
+  noCoursesSelected: {
+    id: 'course-authoring.schedule-section.requirements.no-courses-selected',
+    defaultMessage: 'No prerequisite courses selected',
+  },
+  addPrerequisiteButton: {
+    id: 'course-authoring.schedule-section.requirements.add-prerequisite-button',
+    defaultMessage: 'Add prerequisite course',
+  },
+  searchPlaceholder: {
+    id: 'course-authoring.schedule-section.requirements.search-placeholder',
+    defaultMessage: 'Search courses...',
+  },
+  noResultsFound: {
+    id: 'course-authoring.schedule-section.requirements.no-results-found',
+    defaultMessage: 'No courses found',
+  },
+  allCoursesSelected: {
+    id: 'course-authoring.schedule-section.requirements.all-courses-selected',
+    defaultMessage: 'All available courses have been selected',
   },
 });
 

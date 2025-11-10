@@ -35,6 +35,7 @@ import CreditSection from './credit-section';
 import DetailsSection from './details-section';
 import IntroducingSection from './introducing-section';
 import PacingSection from './pacing-section';
+import CourseModeSection from './course-mode-section';
 import ScheduleSection from './schedule-section';
 import LearningOutcomesSection from './learning-outcomes-section';
 import InstructorsSection from './instructors-section';
@@ -257,6 +258,9 @@ const ScheduleAndDetails = ({ courseId }) => {
                     selfPaced={selfPaced}
                     startDate={startDate}
                     onChange={handleValuesChange}
+                  />
+                  <CourseModeSection
+                    courseId={courseId}
                   />
                   <ScheduleSection
                     endDate={endDate}
