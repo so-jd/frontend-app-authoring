@@ -20,7 +20,8 @@ import {
   Delete,
 } from '@openedx/paragon/icons';
 
-import messages from '../messages';
+import messages from '../../messages';
+import './PathCard.scss';
 
 /**
  * Card component displaying a learning path with its metadata and actions.
@@ -43,27 +44,26 @@ const PathCard = ({ path, onEdit, onDelete }) => {
         border: '1px solid #e0e0e0',
         borderRadius: '8px',
         overflow: 'hidden',
-        transition: 'transform 0.2s, box-shadow 0.2s',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
       }}
     >
       {/* Image Section */}
       {path.image ? (
-        <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
-          <Card.ImageCap
+        <div style={{
+          position: 'relative',
+          height: '200px',
+          width: '100%',
+          overflow: 'hidden',
+          backgroundColor: '#dee2e6',
+        }}>
+          <img
             src={path.image}
-            srcAlt={path.displayName}
+            alt={path.displayName}
             style={{
               height: '100%',
               width: '100%',
               objectFit: 'cover',
+              objectPosition: 'center',
+              display: 'block',
             }}
           />
           {/* Actions Menu Overlay */}
@@ -76,6 +76,16 @@ const PathCard = ({ path, onEdit, onDelete }) => {
                 variant="primary"
                 alt="Actions"
                 size="sm"
+                className="path-card-menu-button"
+                style={{
+                  backgroundColor: '#e9ecef',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  padding: '4px',
+                  border: 'none',
+                  color: '#0a4a82',
+                }}
               />
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => onEdit(path)}>
@@ -111,6 +121,16 @@ const PathCard = ({ path, onEdit, onDelete }) => {
                 variant="primary"
                 alt="Actions"
                 size="sm"
+                className="path-card-menu-button"
+                style={{
+                  backgroundColor: '#e9ecef',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  padding: '4px',
+                  border: 'none',
+                  color: '#0a4a82',
+                }}
               />
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => onEdit(path)}>

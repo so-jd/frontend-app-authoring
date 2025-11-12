@@ -12,13 +12,13 @@ import { StudioFooterSlot } from '@edx/frontend-component-footer';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import { getConfig } from '@edx/frontend-platform';
 
-import Header from '../header';
-import SubHeader from '../generic/sub-header/SubHeader';
-import PathForm from './path-form';
-import PathSidebar from './path-sidebar';
-import { useLearningPaths } from './hooks';
-import messages from './messages';
-import './LearningPaths.scss';
+import Header from '../../header';
+import SubHeader from '../../generic/sub-header/SubHeader';
+import PathForm from '../form/PathForm';
+import PathSidebar from '../components/PathSidebar';
+import { useLearningPaths } from '../hooks/useLearningPaths';
+import messages from '../messages';
+import '../LearningPaths.scss';
 
 /**
  * Page component for creating or editing a learning path.

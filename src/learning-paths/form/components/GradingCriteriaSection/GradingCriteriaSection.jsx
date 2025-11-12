@@ -4,7 +4,7 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import { Form } from '@openedx/paragon';
 import { useFormikContext } from 'formik';
 
-import messages from '../messages';
+import messages from '../../../messages';
 
 /**
  * Form section for grading criteria (required completion % and required grade %).

@@ -12,13 +12,13 @@ import {
 import { Add as AddIcon } from '@openedx/paragon/icons';
 import { StudioFooterSlot } from '@edx/frontend-component-footer';
 
-import Header from '../header';
-import SubHeader from '../generic/sub-header/SubHeader';
-import { useLearningPaths } from './hooks';
-import PathCard from './path-card';
-import EmptyPlaceholder from './empty-placeholder';
-import messages from './messages';
-import './LearningPaths.scss';
+import Header from '../../header';
+import SubHeader from '../../generic/sub-header/SubHeader';
+import { useLearningPaths } from '../hooks/useLearningPaths';
+import PathCard from '../components/PathCard';
+import EmptyPlaceholder from '../components/EmptyPlaceholder';
+import messages from '../messages';
+import '../LearningPaths.scss';
 
 /**
  * Main page component for managing learning paths.

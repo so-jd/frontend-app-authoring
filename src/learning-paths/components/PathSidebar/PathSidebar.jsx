@@ -2,7 +2,7 @@ import React from 'react';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Hyperlink } from '@openedx/paragon';
 
-import messages from '../messages';
+import messages from '../../messages';
 
 /**
  * Sidebar component with help content and documentation links.

@@ -6,7 +6,7 @@ import { Delete as DeleteIcon, DragIndicator } from '@openedx/paragon/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import messages from '../messages';
+import messages from '../../../messages';
 
 /**
  * Component displaying a single course step with order and weight inputs.

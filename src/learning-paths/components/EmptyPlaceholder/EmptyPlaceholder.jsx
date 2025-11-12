@@ -4,7 +4,7 @@ import { useIntl } from '@edx/frontend-platform/i18n';
 import { Button } from '@openedx/paragon';
 import { Add as AddIcon } from '@openedx/paragon/icons';
 
-import messages from '../messages';
+import messages from '../../messages';
 
 /**
  * Empty state placeholder shown when no learning paths exist.

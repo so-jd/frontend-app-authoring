@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToggle } from '@openedx/paragon';
 
-import { RequestStatus } from '../data/constants';
+import { RequestStatus } from '../../data/constants';
 import {
   getLearningPaths,
   getLoadingStatus,
@@ -10,18 +10,18 @@ import {
   getDeletingStatus,
   getErrorMessage,
   getCurrentPath,
-} from './data/selectors';
+} from '../data/selectors';
 import {
   fetchLearningPathsQuery,
   createLearningPathQuery,
   updateLearningPathQuery,
   deleteLearningPathQuery,
-} from './data/thunk';
+} from '../data/thunk';
 import {
   clearCurrentPath,
   setCurrentPath,
   clearErrorMessage,
-} from './data/slice';
+} from '../data/slice';
 
 /**
  * Custom hook to manage learning paths state and operations.

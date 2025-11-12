@@ -5,7 +5,7 @@ import { Button, Form, IconButton } from '@openedx/paragon';
 import { Add as AddIcon, Delete as DeleteIcon } from '@openedx/paragon/icons';
 import { useFormikContext, FieldArray } from 'formik';
 
-import messages from '../messages';
+import messages from '../../../messages';
 
 /**
  * Form section for managing required and acquired skills.

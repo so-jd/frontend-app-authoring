@@ -1,0 +1,13 @@
+.path-card-menu-button {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #dee2e6 !important;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

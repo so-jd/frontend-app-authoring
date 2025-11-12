@@ -16,12 +16,12 @@ import {
   Spinner,
   Alert,
 } from '@openedx/paragon';
-import PromptIfDirty from '../../generic/prompt-if-dirty/PromptIfDirty';
+import PromptIfDirty from '../../../generic/prompt-if-dirty/PromptIfDirty';
 
-import { CourseStepsList } from '../course-management';
-import { SkillsSection } from '../skills-management';
-import GradingCriteriaSection from '../grading-criteria';
-import messages from '../messages';
+import { CourseStepsList } from '../components/CourseStepsList';
+import { SkillsSection } from '../components/SkillsSection';
+import GradingCriteriaSection from '../components/GradingCriteriaSection';
+import messages from '../../messages';
 
 /**
  * Form for creating or editing a learning path with all metadata and settings.

@@ -1,1 +1,1 @@
-export { default } from './LearningPaths';
+export { default } from './pages/LearningPathsListPage';

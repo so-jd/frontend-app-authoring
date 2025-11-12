@@ -32,7 +32,7 @@ import { TaxonomyLayout, TaxonomyDetailPage, TaxonomyListPage } from './taxonomy
 import { ContentTagsDrawer } from './content-tags-drawer';
 import AccessibilityPage from './accessibility-page';
 import LearningPaths from './learning-paths';
-import LearningPathEditor from './learning-paths/LearningPathEditor';
+import LearningPathEditor from './learning-paths/pages/LearningPathEditorPage';
 import { ToastProvider } from './generic/toast-context';
 import { ContentType } from './library-authoring/routes';
 

@@ -18,8 +18,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 
-import CourseStepItem from './CourseStepItem';
-import messages from '../messages';
+import CourseStepItem from '../CourseStepItem';
+import messages from '../../../messages';
 
 /**
  * Component displaying the list of course steps with ability to add/remove courses.
