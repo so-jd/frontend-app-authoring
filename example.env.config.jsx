@@ -4,6 +4,7 @@ import { PLUGIN_OPERATIONS, DIRECT_PLUGIN } from '@openedx/frontend-plugin-frame
 // Load environment variables from .env file
 const config = {
   ...process.env,
+  ENABLE_LEARNING_PATHS: 'true',
   pluginSlots: {
     additional_course_plugin: {
       plugins: [

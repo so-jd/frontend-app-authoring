@@ -31,6 +31,8 @@ import CourseRerun from './course-rerun';
 import { TaxonomyLayout, TaxonomyDetailPage, TaxonomyListPage } from './taxonomy';
 import { ContentTagsDrawer } from './content-tags-drawer';
 import AccessibilityPage from './accessibility-page';
+import LearningPaths from './learning-paths';
+import LearningPathEditor from './learning-paths/LearningPathEditor';
 import { ToastProvider } from './generic/toast-context';
 import { ContentType } from './library-authoring/routes';
 
@@ -95,6 +97,13 @@ const App = () => {
         <Route path="/course_rerun/:courseId" element={<CourseRerun />} />
         {getConfig().ENABLE_ACCESSIBILITY_PAGE === 'true' && (
           <Route path="/accessibility" element={<AccessibilityPage />} />
+        )}
+        {getConfig().ENABLE_LEARNING_PATHS === 'true' && (
+          <>
+            <Route path="/learning-paths" element={<LearningPaths />} />
+            <Route path="/learning-paths/new" element={<LearningPathEditor />} />
+            <Route path="/learning-paths/:pathKey/edit" element={<LearningPathEditor />} />
+          </>
         )}
         {getConfig().ENABLE_TAGGING_TAXONOMY_PAGES === 'true' && (
           <>

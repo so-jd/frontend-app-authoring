@@ -11,6 +11,7 @@ import { Add as AddIcon, Error } from '@openedx/paragon/icons';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { StudioFooterSlot } from '@edx/frontend-component-footer';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getConfig } from '@edx/frontend-platform';
 
 import Loading from '../generic/Loading';
 import InternetConnectionAlert from '../generic/internet-connection-alert';
@@ -163,7 +164,7 @@ const StudioHome = () => {
 
   return (
     <>
-      <Header isHiddenMainMenu />
+      <Header isHiddenMainMenu showPageNavigation />
       <Container size="xl" className="p-4 mt-3">
         <section className="mb-4">
           <article className="studio-home-sub-header">

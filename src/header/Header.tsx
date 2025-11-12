@@ -9,6 +9,7 @@ import {
   useContentMenuItems, useLibrarySettingsMenuItems, useLibraryToolsMenuItems, useSettingMenuItems, useToolsMenuItems,
 } from './hooks';
 import messages from './messages';
+import PageNavigation from './PageNavigation';
 
 type ContainerPropsType = Omit<React.ComponentProps<typeof Container>, 'children'>;
 
@@ -21,6 +22,7 @@ interface HeaderProps {
   isLibrary?: boolean,
   containerProps?: ContainerPropsType,
   readOnly?: boolean,
+  showPageNavigation?: boolean,
 }
 
 const Header = ({
@@ -32,6 +34,7 @@ const Header = ({
   isLibrary = false,
   containerProps = {},
   readOnly = false,
+  showPageNavigation = false,
 }: HeaderProps) => {
   const intl = useIntl();
   const waffleFlags = useWaffleFlags();
@@ -100,6 +103,7 @@ const Header = ({
         containerProps={containerProps}
         isNewHomePage={waffleFlags.useNewHomePage}
       />
+      {showPageNavigation && <PageNavigation />}
       {meiliSearchEnabled && (
         <SearchModal
           isOpen={isShowSearchModalOpen}

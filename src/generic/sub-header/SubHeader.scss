@@ -6,6 +6,22 @@
     margin-bottom: 1.75rem;
     align-self: flex-end;
   }
+
+  // Mobile responsive styles
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+
+    .sub-header-actions {
+      align-self: stretch;
+      margin-bottom: 0;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
 }
 
 .sub-header-title {
@@ -17,6 +33,12 @@
     font: normal var(--pgn-typography-font-weight-normal) .875rem/1.5rem var(--pgn-typography-font-family-base);
     display: block;
     color: $text-color-base;
+  }
+
+  // Mobile responsive styles
+  @media (max-width: 767px) {
+    font-size: 1.5rem;
+    line-height: 1.75rem;
   }
 }
 
