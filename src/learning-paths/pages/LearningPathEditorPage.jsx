@@ -158,7 +158,7 @@ const LearningPathEditor = () => {
       level: '',
       duration: '',
       timeCommitment: '',
-      sequential: false,
+      sequential: true,
       inviteOnly: true,
       steps: [],
       requiredSkills: [],
