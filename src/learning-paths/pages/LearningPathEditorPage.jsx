@@ -42,6 +42,7 @@ const LearningPathEditor = () => {
   } = useLearningPaths();
 
   const [currentPath, setCurrentPath] = useState(null);
+  const [enrichedDuplicatePath, setEnrichedDuplicatePath] = useState(null);
   const [isEnrichingCourses, setIsEnrichingCourses] = useState(false);
 
   // Fetch course details to get display names
@@ -84,7 +85,7 @@ const LearningPathEditor = () => {
     }
   }, []);
 
-  // Load the path data if in edit mode and enrich course steps
+  // Load the path data if in edit mode or duplicate mode and enrich course steps
   useEffect(() => {
     const loadAndEnrichPath = async () => {
       if (isEditMode && paths.length > 0) {
@@ -100,11 +101,21 @@ const LearningPathEditor = () => {
         } else {
           setCurrentPath(null);
         }
+      } else if (isDuplicateMode && location.state?.duplicateFrom) {
+        // Enrich courses for duplicate mode
+        const duplicatePath = location.state.duplicateFrom;
+        setIsEnrichingCourses(true);
+        const enrichedSteps = await enrichCoursesWithDisplayNames(duplicatePath.steps);
+        setEnrichedDuplicatePath({
+          ...duplicatePath,
+          steps: enrichedSteps,
+        });
+        setIsEnrichingCourses(false);
       }
     };
 
     loadAndEnrichPath();
-  }, [isEditMode, pathKey, paths, enrichCoursesWithDisplayNames]);
+  }, [isEditMode, isDuplicateMode, pathKey, paths, location.state, enrichCoursesWithDisplayNames]);
 
   const parsePathKey = (key) => {
     if (!key) {
@@ -124,8 +135,8 @@ const LearningPathEditor = () => {
 
   const getInitialValues = () => {
     // Handle duplicate mode - pre-fill with duplicateFrom data but clear key fields
-    if (isDuplicateMode) {
-      const duplicatePath = location.state.duplicateFrom;
+    if (isDuplicateMode && enrichedDuplicatePath) {
+      const duplicatePath = enrichedDuplicatePath;
       return {
         key: '',
         organization: '',
