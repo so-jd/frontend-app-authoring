@@ -46,6 +46,11 @@ const LearningPaths = () => {
     navigate(`/learning-paths/${encodeURIComponent(path.key)}/edit`);
   };
 
+  const handleDuplicateClick = (path) => {
+    // Navigate to create page with the path data pre-filled
+    navigate('/learning-paths/new', { state: { duplicateFrom: path } });
+  };
+
   if (isLoading) {
     return (
       <>
@@ -123,6 +128,7 @@ const LearningPaths = () => {
               path={path}
               onEdit={handleEditClick}
               onDelete={handleConfirmDelete}
+              onDuplicate={handleDuplicateClick}
             />
           ))}
         </div>

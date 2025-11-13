@@ -37,6 +37,10 @@ const messages = defineMessages({
     id: 'course-authoring.learning-paths.card.button.delete',
     defaultMessage: 'Delete',
   },
+  cardDuplicateButton: {
+    id: 'course-authoring.learning-paths.card.button.duplicate',
+    defaultMessage: 'Duplicate',
+  },
   cardCoursesLabel: {
     id: 'course-authoring.learning-paths.card.label.courses',
     defaultMessage: '{count, plural, one {# course} other {# courses}}',

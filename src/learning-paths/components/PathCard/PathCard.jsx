@@ -18,6 +18,7 @@ import {
   LockOpen,
   Edit,
   Delete,
+  ContentCopy,
 } from '@openedx/paragon/icons';
 
 import messages from '../../messages';
@@ -26,7 +27,7 @@ import './PathCard.scss';
 /**
  * Card component displaying a learning path with its metadata and actions.
  */
-const PathCard = ({ path, onEdit, onDelete }) => {
+const PathCard = ({ path, onEdit, onDelete, onDuplicate }) => {
   const intl = useIntl();
 
   const courseCount = path.steps?.length || 0;
@@ -92,6 +93,10 @@ const PathCard = ({ path, onEdit, onDelete }) => {
                   <Icon src={Edit} size="sm" className="mr-2" />
                   {intl.formatMessage(messages.cardEditButton)}
                 </Dropdown.Item>
+                <Dropdown.Item onClick={() => onDuplicate(path)}>
+                  <Icon src={ContentCopy} size="sm" className="mr-2" />
+                  {intl.formatMessage(messages.cardDuplicateButton)}
+                </Dropdown.Item>
                 <Dropdown.Item onClick={() => onDelete(path)} className="text-danger">
                   <Icon src={Delete} size="sm" className="mr-2" />
                   {intl.formatMessage(messages.cardDeleteButton)}
@@ -136,6 +141,10 @@ const PathCard = ({ path, onEdit, onDelete }) => {
                 <Dropdown.Item onClick={() => onEdit(path)}>
                   <Icon src={Edit} size="sm" className="mr-2" />
                   {intl.formatMessage(messages.cardEditButton)}
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => onDuplicate(path)}>
+                  <Icon src={ContentCopy} size="sm" className="mr-2" />
+                  {intl.formatMessage(messages.cardDuplicateButton)}
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => onDelete(path)} className="text-danger">
                   <Icon src={Delete} size="sm" className="mr-2" />
@@ -387,6 +396,7 @@ PathCard.propTypes = {
   }).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onDuplicate: PropTypes.func.isRequired,
 };
 
 export default PathCard;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Helmet } from 'react-helmet';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   Container,
   Layout,
@@ -27,8 +27,10 @@ import '../LearningPaths.scss';
 const LearningPathEditor = () => {
   const intl = useIntl();
   const navigate = useNavigate();
+  const location = useLocation();
   const { pathKey } = useParams();
   const isEditMode = !!pathKey;
+  const isDuplicateMode = !isEditMode && location.state?.duplicateFrom;
 
   const {
     paths,
@@ -121,6 +123,33 @@ const LearningPathEditor = () => {
   };
 
   const getInitialValues = () => {
+    // Handle duplicate mode - pre-fill with duplicateFrom data but clear key fields
+    if (isDuplicateMode) {
+      const duplicatePath = location.state.duplicateFrom;
+      return {
+        key: '',
+        organization: '',
+        pathNumber: '',
+        pathRun: '',
+        pathGroup: 'default',
+        displayName: `${duplicatePath.displayName || ''} (Copy)`,
+        subtitle: duplicatePath.subtitle || '',
+        description: duplicatePath.description || '',
+        image: duplicatePath.image || null,
+        level: duplicatePath.level || '',
+        duration: duplicatePath.duration || '',
+        timeCommitment: duplicatePath.timeCommitment || '',
+        sequential: duplicatePath.sequential || false,
+        inviteOnly: duplicatePath.inviteOnly !== undefined ? duplicatePath.inviteOnly : true,
+        steps: Array.isArray(duplicatePath.steps) ? duplicatePath.steps : [],
+        requiredSkills: Array.isArray(duplicatePath.requiredSkills) ? duplicatePath.requiredSkills : [],
+        acquiredSkills: Array.isArray(duplicatePath.acquiredSkills) ? duplicatePath.acquiredSkills : [],
+        requiredCompletion: duplicatePath.requiredCompletion || 80,
+        requiredGrade: duplicatePath.requiredGrade || 75,
+      };
+    }
+
+    // Handle edit mode - pre-fill with current path data
     if (currentPath) {
       const keyParts = parsePathKey(currentPath.key);
       return {
@@ -145,6 +174,8 @@ const LearningPathEditor = () => {
         requiredGrade: currentPath.requiredGrade || 75,
       };
     }
+
+    // Handle create mode - empty form
     return {
       key: '',
       organization: '',
