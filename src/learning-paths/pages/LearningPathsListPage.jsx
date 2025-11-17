@@ -9,7 +9,7 @@ import {
   Spinner,
   Alert,
 } from '@openedx/paragon';
-import { Add as AddIcon } from '@openedx/paragon/icons';
+import { Add as AddIcon, People } from '@openedx/paragon/icons';
 import { StudioFooterSlot } from '@edx/frontend-component-footer';
 
 import Header from '../../header';
@@ -40,6 +40,10 @@ const LearningPaths = () => {
 
   const handleCreateClick = () => {
     navigate('/learning-paths/new');
+  };
+
+  const handleBulkEnrollClick = () => {
+    navigate('/learning-paths/bulk-enroll');
   };
 
   const handleEditClick = (path) => {
@@ -95,13 +99,22 @@ const LearningPaths = () => {
       <SubHeader
         title={intl.formatMessage(messages.headingTitle)}
         headerActions={(
-          <Button
-            variant="primary"
-            iconBefore={AddIcon}
-            onClick={handleCreateClick}
-          >
-            {intl.formatMessage(messages.createButton)}
-          </Button>
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <Button
+              variant="outline-primary"
+              iconBefore={People}
+              onClick={handleBulkEnrollClick}
+            >
+              {intl.formatMessage(messages.bulkEnrollButton)}
+            </Button>
+            <Button
+              variant="primary"
+              iconBefore={AddIcon}
+              onClick={handleCreateClick}
+            >
+              {intl.formatMessage(messages.createButton)}
+            </Button>
+          </div>
         )}
       />
 

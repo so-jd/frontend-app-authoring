@@ -33,6 +33,7 @@ import { ContentTagsDrawer } from './content-tags-drawer';
 import AccessibilityPage from './accessibility-page';
 import LearningPaths from './learning-paths';
 import LearningPathEditor from './learning-paths/pages/LearningPathEditorPage';
+import BulkEnrollmentPage from './learning-paths/pages/BulkEnrollmentPage';
 import { ToastProvider } from './generic/toast-context';
 import { ContentType } from './library-authoring/routes';
 
@@ -103,6 +104,7 @@ const App = () => {
             <Route path="/learning-paths" element={<LearningPaths />} />
             <Route path="/learning-paths/new" element={<LearningPathEditor />} />
             <Route path="/learning-paths/:pathKey/edit" element={<LearningPathEditor />} />
+            <Route path="/learning-paths/bulk-enroll" element={<BulkEnrollmentPage />} />
           </>
         )}
         {getConfig().ENABLE_TAGGING_TAXONOMY_PAGES === 'true' && (

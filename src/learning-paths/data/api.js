@@ -186,3 +186,232 @@ export async function createSkill(displayName) {
     });
   return camelCaseObject(data);
 }
+
+/**
+ * Bulk enroll users in learning paths.
+ * @param {Object} enrollmentData - Enrollment data
+ * @param {Array<string>} enrollmentData.learningPaths - Array of learning path keys
+ * @param {Array<string>} [enrollmentData.emails] - Array of user email addresses
+ * @param {Array<number>} [enrollmentData.groupIds] - Array of Django group IDs
+ * @param {string} [enrollmentData.reason] - Optional reason for enrollment (for audit trail)
+ * @param {string} [enrollmentData.org] - Optional organization (for audit trail)
+ * @param {string} [enrollmentData.role] - Optional role (for audit trail)
+ * @returns {Promise<Object>} Object with enrollment counts
+ * @example
+ * bulkEnroll({
+ *   learningPaths: ['path-v1:edX+LP101+2024+T1'],
+ *   emails: ['user1@example.com', 'user2@example.com'],
+ *   groupIds: [1, 2],
+ *   reason: 'Q1 2024 cohort enrollment',
+ *   org: 'edX',
+ *   role: 'learner'
+ * })
+ * // Returns: { enrollmentsCreated: 2, enrollmentAllowedCreated: 0 }
+ */
+export async function bulkEnroll(enrollmentData) {
+  const requestData = {
+    learning_paths: enrollmentData.learningPaths.join(','),
+  };
+
+  // Add emails if provided
+  if (enrollmentData.emails && enrollmentData.emails.length > 0) {
+    requestData.emails = enrollmentData.emails.join(',');
+  }
+
+  // Add group IDs if provided
+  if (enrollmentData.groupIds && enrollmentData.groupIds.length > 0) {
+    requestData.group_ids = enrollmentData.groupIds.join(',');
+  }
+
+  // Add optional metadata fields if provided
+  if (enrollmentData.reason) {
+    requestData.reason = enrollmentData.reason;
+  }
+  if (enrollmentData.org) {
+    requestData.org = enrollmentData.org;
+  }
+  if (enrollmentData.role) {
+    requestData.role = enrollmentData.role;
+  }
+
+  const { data } = await getAuthenticatedHttpClient()
+    .post(`${getApiBaseUrl()}/api/learning_paths/v1/enrollments/bulk-enroll/`, requestData);
+  return camelCaseObject(data);
+}
+
+/**
+ * Get all available Django groups for bulk enrollment.
+ * @returns {Promise<Array>} Array of group objects with id, name, and member_count
+ * @example
+ * fetchGroups()
+ * // Returns: [{ id: 1, name: 'Staff', memberCount: 25 }, ...]
+ */
+export async function fetchGroups() {
+  const { data } = await getAuthenticatedHttpClient()
+    .get(`${getApiBaseUrl()}/api/learning_paths/v1/groups/`);
+  return camelCaseObject(data);
+}
+
+/**
+ * Bulk unenroll users from learning paths.
+ * @param {Object} unenrollmentData - Unenrollment data
+ * @param {Array<string>} unenrollmentData.learningPaths - Array of learning path keys
+ * @param {Array<string>} [unenrollmentData.emails] - Array of user email addresses
+ * @param {Array<number>} [unenrollmentData.groupIds] - Array of Django group IDs
+ * @param {string} [unenrollmentData.reason] - Optional reason for unenrollment (for audit trail)
+ * @param {string} [unenrollmentData.org] - Optional organization (for audit trail)
+ * @param {string} [unenrollmentData.role] - Optional role (for audit trail)
+ * @returns {Promise<Object>} Object with unenrollment counts
+ * @example
+ * bulkUnenroll({
+ *   learningPaths: ['path-v1:edX+LP101+2024+T1'],
+ *   emails: ['user1@example.com', 'user2@example.com'],
+ *   groupIds: [1, 2],
+ *   reason: 'Course completion',
+ * })
+ * // Returns: { enrollmentsUnenrolled: 2, enrollmentAllowedDeactivated: 0 }
+ */
+export async function bulkUnenroll(unenrollmentData) {
+  const requestData = {
+    learning_paths: unenrollmentData.learningPaths.join(','),
+  };
+
+  // Add emails if provided
+  if (unenrollmentData.emails && unenrollmentData.emails.length > 0) {
+    requestData.emails = unenrollmentData.emails.join(',');
+  }
+
+  // Add group IDs if provided
+  if (unenrollmentData.groupIds && unenrollmentData.groupIds.length > 0) {
+    requestData.group_ids = unenrollmentData.groupIds.join(',');
+  }
+
+  // Add optional metadata fields if provided
+  if (unenrollmentData.reason) {
+    requestData.reason = unenrollmentData.reason;
+  }
+  if (unenrollmentData.org) {
+    requestData.org = unenrollmentData.org;
+  }
+  if (unenrollmentData.role) {
+    requestData.role = unenrollmentData.role;
+  }
+
+  const { data} = await getAuthenticatedHttpClient()
+    .delete(`${getApiBaseUrl()}/api/learning_paths/v1/enrollments/bulk-enroll/`, {
+      data: requestData,
+    });
+  return camelCaseObject(data);
+}
+
+/**
+ * Enroll a single user in a learning path.
+ * @param {string} learningPathKey - Learning path key
+ * @param {string} username - Username or email of the user to enroll
+ * @param {Object} [metadata] - Optional enrollment metadata
+ * @param {string} [metadata.reason] - Reason for enrollment (for audit trail)
+ * @param {string} [metadata.org] - Organization (for audit trail)
+ * @param {string} [metadata.role] - Role (for audit trail)
+ * @returns {Promise<Object>} Enrollment details
+ * @example
+ * enrollUser('path-v1:edX+LP101+2024+T1', 'john.doe', {
+ *   reason: 'Manual enrollment by instructor',
+ *   org: 'edX',
+ *   role: 'learner'
+ * })
+ */
+export async function enrollUser(learningPathKey, username, metadata = {}) {
+  const requestData = {
+    username,
+  };
+
+  // Add optional metadata fields if provided
+  if (metadata.reason) {
+    requestData.reason = metadata.reason;
+  }
+  if (metadata.org) {
+    requestData.org = metadata.org;
+  }
+  if (metadata.role) {
+    requestData.role = metadata.role;
+  }
+
+  const { data } = await getAuthenticatedHttpClient()
+    .post(`${getApiBaseUrl()}/api/learning_paths/v1/${learningPathKey}/enrollments/`, requestData);
+  return camelCaseObject(data);
+}
+
+/**
+ * Unenroll a single user from a learning path.
+ * @param {string} learningPathKey - Learning path key
+ * @param {string} username - Username of the user to unenroll
+ * @param {Object} [metadata] - Optional unenrollment metadata
+ * @param {string} [metadata.reason] - Reason for unenrollment (for audit trail)
+ * @param {string} [metadata.org] - Organization (for audit trail)
+ * @param {string} [metadata.role] - Role (for audit trail)
+ * @returns {Promise<void>}
+ * @example
+ * unenrollUser('path-v1:edX+LP101+2024+T1', 'john.doe', {
+ *   reason: 'User requested removal'
+ * })
+ */
+export async function unenrollUser(learningPathKey, username, metadata = {}) {
+  const requestData = {
+    username,
+  };
+
+  // Add optional metadata fields if provided
+  if (metadata.reason) {
+    requestData.reason = metadata.reason;
+  }
+  if (metadata.org) {
+    requestData.org = metadata.org;
+  }
+  if (metadata.role) {
+    requestData.role = metadata.role;
+  }
+
+  await getAuthenticatedHttpClient()
+    .delete(`${getApiBaseUrl()}/api/learning_paths/v1/${learningPathKey}/enrollments/`, {
+      data: requestData,
+    });
+}
+
+/**
+ * Get enrollments for a specific learning path.
+ * @param {string} learningPathKey - Learning path key
+ * @param {string} [username] - Optional username to filter enrollments
+ * @returns {Promise<Array>} Array of enrollment objects
+ * @example
+ * getLearningPathEnrollments('path-v1:edX+LP101+2024+T1')
+ * // Returns: [{ user: {...}, learningPath: {...}, isActive: true, created: '...' }, ...]
+ */
+export async function getLearningPathEnrollments(learningPathKey, username = null) {
+  const params = {};
+  if (username) {
+    params.username = username;
+  }
+
+  const { data } = await getAuthenticatedHttpClient()
+    .get(`${getApiBaseUrl()}/api/learning_paths/v1/${learningPathKey}/enrollments/`, { params });
+  return camelCaseObject(data);
+}
+
+/**
+ * Get all enrollments for the current user or search by username (staff only).
+ * @param {string} [username] - Optional username to search for (staff only)
+ * @returns {Promise<Array>} Array of enrollment objects
+ * @example
+ * getUserEnrollments('john.doe')
+ * // Returns: [{ user: {...}, learningPath: {...}, isActive: true, created: '...' }, ...]
+ */
+export async function getUserEnrollments(username = null) {
+  const params = {};
+  if (username) {
+    params.username = username;
+  }
+
+  const { data } = await getAuthenticatedHttpClient()
+    .get(`${getApiBaseUrl()}/api/learning_paths/v1/enrollments/`, { params });
+  return camelCaseObject(data);
+}

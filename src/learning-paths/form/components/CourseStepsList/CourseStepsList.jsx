@@ -133,7 +133,7 @@ const CourseStepsList = () => {
   return (
     <div className="course-steps-list mb-4">
       <h3 className="h5 mb-3">
-        {intl.formatMessage(messages.coursesTitle)}
+        {intl.formatMessage(messages.coursesTitle)} <span className="text-danger">*</span>
       </h3>
 
       <FieldArray name="steps">

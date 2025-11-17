@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useIntl } from '@edx/frontend-platform/i18n';
 import { Helmet } from 'react-helmet';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -44,6 +44,31 @@ const LearningPathEditor = () => {
   const [currentPath, setCurrentPath] = useState(null);
   const [enrichedDuplicatePath, setEnrichedDuplicatePath] = useState(null);
   const [isEnrichingCourses, setIsEnrichingCourses] = useState(false);
+  const [duplicateImageFile, setDuplicateImageFile] = useState(null);
+
+  // Fetch an image URL and convert it to a File object
+  const fetchImageAsFile = useCallback(async (imageUrl) => {
+    if (!imageUrl) {
+      return null;
+    }
+
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      // Extract filename from URL or use a default
+      const urlParts = imageUrl.split('/');
+      const filename = urlParts[urlParts.length - 1] || 'learning-path-image.jpg';
+
+      // Create a File object from the blob
+      const file = new File([blob], filename, { type: blob.type });
+      return file;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to fetch image:', error);
+      return null;
+    }
+  }, []);
 
   // Fetch course details to get display names
   const enrichCoursesWithDisplayNames = useCallback(async (steps) => {
@@ -70,16 +95,18 @@ const LearningPathEditor = () => {
             };
           } catch (error) {
             // If course fetch fails, use courseKey as displayName
+            // eslint-disable-next-line no-console
             console.warn(`Failed to fetch course details for ${step.courseKey}:`, error);
             return {
               ...step,
               displayName: step.courseKey,
             };
           }
-        })
+        }),
       );
       return enrichedSteps;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to enrich courses:', error);
       return steps;
     }
@@ -102,9 +129,17 @@ const LearningPathEditor = () => {
           setCurrentPath(null);
         }
       } else if (isDuplicateMode && location.state?.duplicateFrom) {
-        // Enrich courses for duplicate mode
+        // Enrich courses for duplicate mode and fetch image as File
         const duplicatePath = location.state.duplicateFrom;
         setIsEnrichingCourses(true);
+
+        // Fetch image and convert to File if it exists
+        let imageFile = null;
+        if (duplicatePath.image) {
+          imageFile = await fetchImageAsFile(duplicatePath.image);
+        }
+        setDuplicateImageFile(imageFile);
+
         const enrichedSteps = await enrichCoursesWithDisplayNames(duplicatePath.steps);
         setEnrichedDuplicatePath({
           ...duplicatePath,
@@ -115,11 +150,16 @@ const LearningPathEditor = () => {
     };
 
     loadAndEnrichPath();
-  }, [isEditMode, isDuplicateMode, pathKey, paths, location.state, enrichCoursesWithDisplayNames]);
+  }, [isEditMode, isDuplicateMode, pathKey, paths, location.state, enrichCoursesWithDisplayNames, fetchImageAsFile]);
 
   const parsePathKey = (key) => {
     if (!key) {
-      return { organization: '', pathNumber: '', pathRun: '', pathGroup: '' };
+      return {
+        organization: '',
+        pathNumber: '',
+        pathRun: '',
+        pathGroup: '',
+      };
     }
     const match = key.match(/^path-v1:([^+]+)\+([^+]+)\+([^+]+)\+([^+]+)$/);
     if (match) {
@@ -130,7 +170,12 @@ const LearningPathEditor = () => {
         pathGroup: match[4],
       };
     }
-    return { organization: '', pathNumber: '', pathRun: '', pathGroup: '' };
+    return {
+      organization: '',
+      pathNumber: '',
+      pathRun: '',
+      pathGroup: '',
+    };
   };
 
   const getInitialValues = () => {
@@ -146,7 +191,7 @@ const LearningPathEditor = () => {
         displayName: `${duplicatePath.displayName || ''} (Copy)`,
         subtitle: duplicatePath.subtitle || '',
         description: duplicatePath.description || '',
-        image: duplicatePath.image || null,
+        image: duplicateImageFile || null,
         level: duplicatePath.level || '',
         duration: duplicatePath.duration || '',
         timeCommitment: duplicatePath.timeCommitment || '',
@@ -233,7 +278,7 @@ const LearningPathEditor = () => {
         <Helmet>
           <title>
             {intl.formatMessage(
-              isEditMode ? messages.formTitleEdit : messages.formTitleCreate
+              isEditMode ? messages.formTitleEdit : messages.formTitleCreate,
             )}
           </title>
         </Helmet>
@@ -254,7 +299,7 @@ const LearningPathEditor = () => {
         <Helmet>
           <title>
             {intl.formatMessage(
-              isEditMode ? messages.formTitleEdit : messages.formTitleCreate
+              isEditMode ? messages.formTitleEdit : messages.formTitleCreate,
             )}
           </title>
         </Helmet>
@@ -291,7 +336,7 @@ const LearningPathEditor = () => {
       <Helmet>
         <title>
           {intl.formatMessage(
-            isEditMode ? messages.formTitleEdit : messages.formTitleCreate
+            isEditMode ? messages.formTitleEdit : messages.formTitleCreate,
           )}
         </title>
       </Helmet>
@@ -299,7 +344,7 @@ const LearningPathEditor = () => {
       <Container size="xl" className="learning-paths px-4 mt-4">
         <SubHeader
           title={intl.formatMessage(
-            isEditMode ? messages.formTitleEdit : messages.formTitleCreate
+            isEditMode ? messages.formTitleEdit : messages.formTitleCreate,
           )}
         />
 

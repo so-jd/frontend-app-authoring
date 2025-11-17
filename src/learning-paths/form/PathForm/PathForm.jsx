@@ -29,12 +29,29 @@ import messages from '../../messages';
 const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) => {
   const intl = useIntl();
   const fileInputRef = useRef(null);
-  const [imagePreview, setImagePreview] = useState(initialValues.image || null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [showCustomOrg, setShowCustomOrg] = useState(false);
   const [orgSearchQuery, setOrgSearchQuery] = useState('');
   const [availableOrgs, setAvailableOrgs] = useState([]);
   const [isLoadingOrgs, setIsLoadingOrgs] = useState(false);
   const [showValidationErrors, setShowValidationErrors] = useState(false);
+
+  // Handle initial image - convert File object to data URL for preview
+  useEffect(() => {
+    if (initialValues.image instanceof File) {
+      // If it's a File object, read it as data URL for preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(initialValues.image);
+    } else if (typeof initialValues.image === 'string') {
+      // If it's a URL string, use it directly
+      setImagePreview(initialValues.image);
+    } else {
+      setImagePreview(null);
+    }
+  }, [initialValues.image]);
 
   // Fetch available organizations from courses
   useEffect(() => {
@@ -282,11 +299,16 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
   return (
     <Card className="learning-path-form mb-4">
       <Card.Section>
-        <h2 className="h4 mb-4">
+        <h2 className="h4 mb-3">
           {isEditMode
             ? intl.formatMessage(messages.formTitleEdit)
             : intl.formatMessage(messages.formTitleCreate)}
         </h2>
+        <p className="text-muted mb-4">
+          <small>
+            Fields marked with <span className="text-danger">*</span> are required.
+          </small>
+        </p>
 
         <Formik
           initialValues={initialValues}
@@ -322,7 +344,7 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                   setFieldValue('pathNumber', generatedId);
                 }
               }
-            }, [values.displayName]);
+            }, [values.displayName, isEditMode, touched.pathNumber, setFieldValue]);
 
             // Auto-build the key when component parts change
             useEffect(() => {
@@ -335,7 +357,7 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
               if (newKey && newKey !== values.key) {
                 setFieldValue('key', newKey);
               }
-            }, [values.organization, values.pathNumber, values.pathRun, values.pathGroup]);
+            }, [values.organization, values.pathNumber, values.pathRun, values.pathGroup, values.key, setFieldValue]);
 
             const handleOrgSelectChange = (e) => {
               const selectedValue = e.target.value;
@@ -367,11 +389,23 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
               <Form onSubmit={handleFormSubmit}>
                 {/* Validation Summary */}
                 {showValidationErrors && errorMessages.length > 0 && (
-                  <Alert variant="danger" className="mb-4" dismissible onClose={() => setShowValidationErrors(false)}>
-                    <Alert.Heading>Please fix the following errors:</Alert.Heading>
+                  <Alert
+                    variant="danger"
+                    className="mb-4 border-danger"
+                    dismissible
+                    onClose={() => setShowValidationErrors(false)}
+                    style={{
+                      borderWidth: '2px',
+                      boxShadow: '0 2px 8px rgba(220, 53, 69, 0.2)'
+                    }}
+                  >
+                    <Alert.Heading className="h5">
+                      <strong>⚠ Validation Errors</strong>
+                    </Alert.Heading>
+                    <p className="mb-2">Please fix the following errors before submitting:</p>
                     <ul className="mb-0 pl-3">
                       {errorMessages.map((error, index) => (
-                        <li key={index}>{error}</li>
+                        <li key={index} className="mb-1">{error}</li>
                       ))}
                     </ul>
                   </Alert>
@@ -380,7 +414,7 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                 {/* Display Name First */}
                 <Form.Group className="mb-4">
                   <Form.Label>
-                    {intl.formatMessage(messages.formLabelDisplayName)} *
+                    {intl.formatMessage(messages.formLabelDisplayName)} <span className="text-danger">*</span>
                   </Form.Label>
                   <Form.Control
                     type="text"
@@ -390,10 +424,10 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                     onChange={handleChange}
                     onBlur={handleBlur}
                   />
-                  {touched.displayName && errors.displayName && (
-                    <Form.Text className="text-danger">
+                  {(touched.displayName || showValidationErrors) && errors.displayName && (
+                    <div className="text-danger small mt-1">
                       {errors.displayName}
-                    </Form.Text>
+                    </div>
                   )}
                 </Form.Group>
 
@@ -406,7 +440,9 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                   <div className="col-md-6">
                     {!showCustomOrg ? (
                       <Form.Group className="mb-3">
-                        <Form.Label>Organization *</Form.Label>
+                        <Form.Label>
+                          Organization <span className="text-danger">*</span>
+                        </Form.Label>
                         <Dropdown className="bg-white w-100">
                           <Dropdown.Toggle
                             id="organization-dropdown-toggle"
@@ -470,16 +506,16 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                             </div>
                           </Dropdown.Menu>
                         </Dropdown>
-                        {touched.organization && errors.organization && (
-                          <Form.Text className="text-danger">
+                        {(touched.organization || showValidationErrors) && errors.organization && (
+                          <div className="invalid-feedback d-block">
                             {errors.organization}
-                          </Form.Text>
+                          </div>
                         )}
                       </Form.Group>
                     ) : (
                       <Form.Group className="mb-3">
                         <Form.Label>
-                          Organization * <Button
+                          Organization <span className="text-danger">*</span> <Button
                             variant="link"
                             size="sm"
                             onClick={() => {
@@ -500,10 +536,10 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                           onBlur={handleBlur}
                           disabled={isEditMode}
                         />
-                        {touched.organization && errors.organization && (
-                          <Form.Text className="text-danger">
+                        {(touched.organization || showValidationErrors) && errors.organization && (
+                          <div className="text-danger small mt-1">
                             {errors.organization}
-                          </Form.Text>
+                          </div>
                         )}
                       </Form.Group>
                     )}
@@ -512,7 +548,7 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>
-                        Path ID *
+                        Path ID <span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -523,10 +559,10 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                         onBlur={handleBlur}
                         disabled={isEditMode}
                       />
-                      {touched.pathNumber && errors.pathNumber ? (
-                        <Form.Text className="text-danger">
+                      {(touched.pathNumber || showValidationErrors) && errors.pathNumber ? (
+                        <div className="text-danger small mt-1">
                           {errors.pathNumber}
-                        </Form.Text>
+                        </div>
                       ) : (
                         <Form.Text className="text-muted small">
                           This will be the unique identifier for this learning path. Auto-generated from the display name.
@@ -540,7 +576,7 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>
-                        Run *
+                        Run <span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -551,10 +587,10 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                         onBlur={handleBlur}
                         disabled={isEditMode}
                       />
-                      {touched.pathRun && errors.pathRun && (
-                        <Form.Text className="text-danger">
+                      {(touched.pathRun || showValidationErrors) && errors.pathRun && (
+                        <div className="text-danger small mt-1">
                           {errors.pathRun}
-                        </Form.Text>
+                        </div>
                       )}
                     </Form.Group>
                   </div>
@@ -562,7 +598,7 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                   <div className="col-md-6">
                     <Form.Group className="mb-3">
                       <Form.Label>
-                        Group *
+                        Group <span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -573,10 +609,10 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                         onBlur={handleBlur}
                         disabled={isEditMode}
                       />
-                      {touched.pathGroup && errors.pathGroup ? (
-                        <Form.Text className="text-danger">
+                      {(touched.pathGroup || showValidationErrors) && errors.pathGroup ? (
+                        <div className="text-danger small mt-1">
                           {errors.pathGroup}
-                        </Form.Text>
+                        </div>
                       ) : (
                         <Form.Text className="text-muted small">
                           Leave as "default" for standard learning paths.
@@ -788,13 +824,28 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
                 </Button>
                 <Button
                   type="submit"
-                  disabled={!isValid || isSaving}
+                  disabled={isSaving}
+                  variant="primary"
                 >
-                  {isEditMode
-                    ? intl.formatMessage(messages.formButtonSave)
-                    : intl.formatMessage(messages.formButtonCreate)}
+                  {isSaving ? (
+                    <>
+                      <Spinner animation="border" size="sm" className="mr-2" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      {isEditMode
+                        ? intl.formatMessage(messages.formButtonSave)
+                        : intl.formatMessage(messages.formButtonCreate)}
+                    </>
+                  )}
                 </Button>
               </ActionRow>
+              {showValidationErrors && !isValid && Object.keys(errors).length > 0 && (
+                <div className="text-danger text-center mt-2 small">
+                  <strong>Please fix validation errors before submitting</strong>
+                </div>
+              )}
 
               <PromptIfDirty dirty={dirty} />
             </Form>
