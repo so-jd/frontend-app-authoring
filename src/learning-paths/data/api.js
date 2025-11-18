@@ -415,3 +415,50 @@ export async function getUserEnrollments(username = null) {
     .get(`${getApiBaseUrl()}/api/learning_paths/v1/enrollments/`, { params });
   return camelCaseObject(data);
 }
+
+/**
+ * Fetch available program certificates from the Credentials service.
+ *
+ * Returns a list of ProgramCertificate objects that can be attached to learning paths.
+ * These certificates will be automatically awarded when learners complete the learning path
+ * and meet the required completion and grade thresholds.
+ *
+ * @returns {Promise<Array>} Array of program certificate objects
+ * @throws {Error} If the Credentials service is unavailable or returns an error
+ * @example
+ * fetchProgramCertificates()
+ * // Returns: [
+ * //   {
+ * //     id: 1,
+ * //     programUuid: 'abc-123-def',
+ * //     title: 'Data Science Certificate',
+ * //     isActive: true,
+ * //     certificateType: 'program',
+ * //     signatories: [...]
+ * //   },
+ * //   ...
+ * // ]
+ */
+export async function fetchProgramCertificates() {
+  const credentialsBaseUrl = getConfig().CREDENTIALS_BASE_URL || getConfig().LMS_BASE_URL;
+
+  try {
+    const { data } = await getAuthenticatedHttpClient()
+      .get(`${credentialsBaseUrl}/api/v1/program_certificates/`);
+
+    return camelCaseObject(data.results || []);
+  } catch (error) {
+    // If the Credentials service API doesn't exist or is unavailable, return empty array
+    // This allows the form to work even if certificates feature is not enabled
+    if (error.response?.status === 404) {
+      // eslint-disable-next-line no-console
+      console.warn('Credentials service API not found. Certificate attachment will be unavailable.');
+      return [];
+    }
+
+    // For other errors, log and re-throw
+    // eslint-disable-next-line no-console
+    console.error('Error fetching program certificates:', error);
+    throw error;
+  }
+}

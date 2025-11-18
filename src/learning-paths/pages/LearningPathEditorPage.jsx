@@ -202,6 +202,7 @@ const LearningPathEditor = () => {
         acquiredSkills: Array.isArray(duplicatePath.acquiredSkills) ? duplicatePath.acquiredSkills : [],
         requiredCompletion: duplicatePath.requiredCompletion || 80,
         requiredGrade: duplicatePath.requiredGrade || 75,
+        programCertificateId: duplicatePath.programCertificateId || null,
       };
     }
 
@@ -228,6 +229,7 @@ const LearningPathEditor = () => {
         acquiredSkills: Array.isArray(currentPath.acquiredSkills) ? currentPath.acquiredSkills : [],
         requiredCompletion: currentPath.requiredCompletion || 80,
         requiredGrade: currentPath.requiredGrade || 75,
+        programCertificateId: currentPath.programCertificateId || null,
       };
     }
 
@@ -252,6 +254,7 @@ const LearningPathEditor = () => {
       acquiredSkills: [],
       requiredCompletion: 80,
       requiredGrade: 75,
+      programCertificateId: null,
     };
   };
 

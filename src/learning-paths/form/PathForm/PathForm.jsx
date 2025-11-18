@@ -21,6 +21,7 @@ import PromptIfDirty from '../../../generic/prompt-if-dirty/PromptIfDirty';
 import { CourseStepsList } from '../components/CourseStepsList';
 import { SkillsSection } from '../components/SkillsSection';
 import GradingCriteriaSection from '../components/GradingCriteriaSection';
+import CertificateSection from '../components/CertificateSection';
 import messages from '../../messages';
 
 /**
@@ -151,6 +152,9 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
     requiredGrade: Yup.number()
       .min(0, 'Must be between 0 and 100')
       .max(100, 'Must be between 0 and 100'),
+    programCertificateId: Yup.number()
+      .nullable()
+      .integer('Certificate ID must be a valid number'),
   });
 
   const handleImageChange = (event, setFieldValue) => {
@@ -814,6 +818,11 @@ const PathForm = ({ initialValues, isEditMode, onSubmit, onCancel, isSaving }) =
 
               {/* Grading Criteria */}
               <GradingCriteriaSection />
+
+              <hr className="my-4" />
+
+              {/* Certificate Attachment */}
+              <CertificateSection />
 
               <hr className="my-4" />
 
